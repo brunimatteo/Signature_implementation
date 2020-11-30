@@ -1,7 +1,6 @@
 package it.satispay.signatureimpl.command;
 
 import com.google.gson.Gson;
-import it.satispay.signatureimpl.pojo.Body;
 import it.satispay.signatureimpl.service.Service;
 import it.satispay.signatureimpl.utilities.Constants;
 
@@ -9,27 +8,31 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Command {
+
+    private static final Logger LOGGER = Logger.getLogger(Command.class.getName());
 
     Service serviceInstance = new Service();
     Gson gson = new Gson();
 
-    public String callingSatispayURL(Body body) {
+    public void callingSatispayURL(String method) {
 
         try {
 
             URL url = new URL(Constants.SATISPAY_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod(method);
 
             //SET HEADER FIELDS
-            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("Accept", "*/*");
             conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Host", Constants.HOST);
-            conn.setRequestProperty("Date", serviceInstance.getDateFormatted());
-            conn.setRequestProperty("Digest", serviceInstance.createTheDigest(gson.toJson(body).intern()));
-            //conn.setRequestProperty("Authorization","");
+            conn.setRequestProperty("host", Constants.HOST);
+            conn.setRequestProperty("date", serviceInstance.getDateFormatted());
+            conn.setRequestProperty("digest", serviceInstance.createTheDigest(""));
+            conn.setRequestProperty("Authorization", serviceInstance.composeTheAuthorizationHeader(serviceInstance.createTheSignature(serviceInstance.createTheString("GET",""), serviceInstance.readAndGetPrivateKeyFromFile())));
 
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP Error code : "
@@ -39,20 +42,12 @@ public class Command {
             BufferedReader br = new BufferedReader(in);
             String output;
             while ((output = br.readLine()) != null) {
-                System.out.println(output);
+                System.out.println("RESPONSE FROM SATISPAY:\n" + output);
             }
             conn.disconnect();
 
         } catch (Exception e) {
-            System.out.println("Exception in NetClientGet:- " + e);
+            LOGGER.log(Level.SEVERE,"Something went wrong in method callingSatispayURL() inside Class Command" + e);
         }
-
-        return null;
     }
-
-    public String preparingAuthentication(){
-        return null;
-    }
-
-
 }
