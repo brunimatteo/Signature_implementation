@@ -32,7 +32,7 @@ public class Command {
             conn.setRequestProperty("host", Constants.HOST);
             conn.setRequestProperty("date", serviceInstance.getDateFormatted());
             conn.setRequestProperty("digest", serviceInstance.createTheDigest(""));
-            conn.setRequestProperty("Authorization", serviceInstance.composeTheAuthorizationHeader(serviceInstance.createTheSignature(serviceInstance.createTheString("GET",""), serviceInstance.readAndGetPrivateKeyFromFile())));
+            conn.setRequestProperty("Authorization", serviceInstance.composeTheAuthorizationHeader(serviceInstance.createTheSignature(serviceInstance.createTheString("GET","",false), serviceInstance.readAndGetPrivateKeyFromFile())));
 
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP Error code : "
@@ -43,6 +43,8 @@ public class Command {
             String output;
             while ((output = br.readLine()) != null) {
                 System.out.println("RESPONSE FROM SATISPAY:\n" + output);
+                System.out.println("----------------------------------");
+                System.out.println("----------------------------------");
             }
             conn.disconnect();
 
