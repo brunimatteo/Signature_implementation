@@ -5,15 +5,9 @@ public class Body {
     private Long amount_unit;
     private String currency;
 
-    public void setFlow(String flow) {
+    public Body(String flow, Long amount_unit, String currency) {
         this.flow = flow;
-    }
-
-    public void setAmount_unit(Long amount_unit) {
         this.amount_unit = amount_unit;
-    }
-
-    public void setCurrency(String currency) {
         this.currency = currency;
     }
 }

@@ -1,6 +1,5 @@
 package it.satispay.signatureimpl.command;
 
-import com.google.gson.Gson;
 import it.satispay.signatureimpl.service.Service;
 import it.satispay.signatureimpl.utilities.Constants;
 
@@ -15,25 +14,32 @@ public class Command {
 
     private static final Logger LOGGER = Logger.getLogger(Command.class.getName());
 
-    Service serviceInstance = new Service();
-    Gson gson = new Gson();
+    Service service = new Service();
 
-    public void callingSatispayURL(String method) {
+    /**
+     This method call the given Satispay URL
+     @param urlSatispay The url to call
+     @param body The body content, if any
+     @param method The Http verb of the call ('GET', 'POST, 'PUT', 'DELETE')
+     */
+    public void callingSatispayURL(String urlSatispay, String body ,String method) {
 
         try {
-
-            URL url = new URL(Constants.SATISPAY_URL);
+            URL url = new URL(urlSatispay);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
             conn.setRequestMethod(method);
-
             //SET HEADER FIELDS
-            conn.setRequestProperty("Accept", "*/*");
-            conn.setRequestProperty("Content-Type", "application/json");
+            if(!body.equals("")) conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("host", Constants.HOST);
-            conn.setRequestProperty("date", serviceInstance.getDateFormatted());
-            conn.setRequestProperty("digest", serviceInstance.createTheDigest(""));
-            conn.setRequestProperty("Authorization", serviceInstance.composeTheAuthorizationHeader(serviceInstance.createTheSignature(serviceInstance.createTheString("GET","",false), serviceInstance.readAndGetPrivateKeyFromFile())));
-
+            conn.setRequestProperty("date", service.getDateFormatted());
+            conn.setRequestProperty("digest", service.createTheDigest(body));
+            conn.setRequestProperty("Authorization", service.composeTheAuthorizationHeader(service.createTheSignature(body, method, service.createTheString(method, body, false), service.readAndGetPrivateKeyFromFile())));
+            //SET BODY
+            if(!body.equals("")){
+                conn.setDoOutput(true);
+                conn.getOutputStream().write(body.getBytes("UTF8"));
+            }
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP Error code : "
                         + conn.getResponseCode());
@@ -42,12 +48,11 @@ public class Command {
             BufferedReader br = new BufferedReader(in);
             String output;
             while ((output = br.readLine()) != null) {
-                System.out.println("RESPONSE FROM SATISPAY:\n" + output);
+                System.out.println("RESPONSE FROM SATISPAY API:\n" + output);
                 System.out.println("----------------------------------");
                 System.out.println("----------------------------------");
             }
             conn.disconnect();
-
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,"Something went wrong in method callingSatispayURL() inside Class Command" + e);
         }

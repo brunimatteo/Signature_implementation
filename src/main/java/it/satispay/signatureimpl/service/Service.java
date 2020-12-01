@@ -22,10 +22,10 @@ public class Service {
     private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
 
     /**
-     This method, given a string, produce the Digest string header Hashing
+     This method, given a string, produce the Digest string header, Hashing
      the content of the body with sha256 algorithm using Base64 as output
      @param stringToHash The string to hash
-     @return The Digest string header
+     @return The Digest string header formatted as per Satispay Documentation
      */
     public String createTheDigest(String stringToHash){
         MessageDigest digest;
@@ -36,7 +36,7 @@ public class Service {
             return Constants.ALGORITHM + "=" + finalHashString;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,"Something went wrong in method createTheDigest() inside Class Service" + e);
-            return null;
+            return "";
         }
     }
 
@@ -61,7 +61,7 @@ public class Service {
             return privateKeyClean;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,"Something went wrong in method readAndGetPrivateKeyFromFile() inside Class Service" + e);
-            return null;
+            return "";
         }
     }
 
@@ -86,7 +86,7 @@ public class Service {
             return publicKeyClean;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,"Something went wrong in method readAndGetPublicKeyFromFile() inside Class Service" + e);
-            return null;
+            return "";
         }
     }
 
@@ -94,8 +94,8 @@ public class Service {
      This method create the string needed to produce the signature
      @param method The current verb of the call to Satispay server
      @param stringToHash The string to hash to produce the Digest
-     @param printOnConsole This is just a simple flag in order to print the String at console one time only
-     @return The String formatted as per Documentation
+     @param printOnConsole This is just a simple flag in order to print the string at console one time only
+     @return The String formatted as per Satispay Documentation
      */
     public String createTheString(String method, String stringToHash, boolean printOnConsole){
         if(printOnConsole){
@@ -111,7 +111,7 @@ public class Service {
      @param privateKey The private key needed to produce the signature
      @return The signature as String
      */
-    public String createTheSignature(String stringToSign, String privateKey){
+    public String createTheSignature(String body, String method, String stringToSign, String privateKey){
         try {
             Signature privateSignature = Signature.getInstance("SHA256withRSA");
             PKCS8EncodedKeySpec encodedPrivateKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey.getBytes()));
@@ -121,7 +121,7 @@ public class Service {
             privateSignature.update(stringToSign.getBytes("UTF-8"));
             byte[] signatureValue = privateSignature.sign();
 
-            verifyTheSignature(createTheString("GET","",true),Base64.getEncoder().encodeToString(signatureValue),readAndGetPublicKeyFromFile());
+            verifyTheSignature(createTheString(method, body, true), Base64.getEncoder().encodeToString(signatureValue), readAndGetPublicKeyFromFile());
 
             System.out.println("SIGNATURE:   " +  Base64.getEncoder().encodeToString(signatureValue));
             System.out.println("----------------------------------");
@@ -129,7 +129,7 @@ public class Service {
             return Base64.getEncoder().encodeToString(signatureValue);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,"Something went wrong in method createTheSignature() inside Class Service" + e);
-            return null;
+            return "";
         }
     }
 
@@ -164,7 +164,7 @@ public class Service {
     /**
      This method compose the Authorization Header value
      @param signature The signature
-     @return The Authorization Header value formatted as per Documentation
+     @return The Authorization Header value formatted as per Satispay Documentation
      */
     public String composeTheAuthorizationHeader(String signature){
         String authorization = "Signature " + "keyId=" + "\"" + Constants.KEY_ID +
@@ -179,7 +179,7 @@ public class Service {
 
     /**
      This method get the current date well formatted
-     @return The current date formatted as per Documentation
+     @return The current date formatted as per Satispay Documentation
      */
     public String getDateFormatted() {
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 0", Locale.ENGLISH);
@@ -190,7 +190,7 @@ public class Service {
     /**
      This method compose the Request Target string value
      @param method The current verb of the call to Satispay server
-     @return The Request Target string value formatted as per Documentation
+     @return The Request Target string value formatted as per Satispay Documentation
      */
     public String getRequestTarget(String method) {
         return Constants.REQUEST_TARGET_FIELD_NAME + " " + method + " " + Constants.REQUEST_TARGET_VALUE;
