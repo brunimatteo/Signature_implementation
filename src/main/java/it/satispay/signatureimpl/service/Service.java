@@ -138,7 +138,7 @@ public class Service {
     }
 
     /**
-     This method makes sure that a message indeed comes from the creator of our public key
+     This method verify the signature with the public key
      @param stringUsedToProduceTheSignature The string used to produce the signature
      @param signature The signature
      @param publicKey The public key needed for the verification

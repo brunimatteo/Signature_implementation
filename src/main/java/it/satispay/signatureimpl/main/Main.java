@@ -21,7 +21,7 @@ public class Main {
         System.out.println("----------------------------------");
         System.out.println("BODY:   NONE");
         System.out.println("----------------------------------");
-        //CALL TO SATISPAY API WITH GET METHOD
+        //CALLING SATISPAY API WITH GET METHOD
         command.callingSatispayURL(Constants.SATISPAY_URL, "", "GET");
 
         /*------------------END GET CALL----------------------*/
@@ -41,7 +41,7 @@ public class Main {
         String bodyPostString = gson.toJson(bodyPost);
         System.out.println("BODY:   " + bodyPostString);
         System.out.println("----------------------------------");
-        //CALL TO SATISPAY API WITH POST METHOD
+        //CALLING SATISPAY API WITH POST METHOD
         command.callingSatispayURL(Constants.SATISPAY_URL, bodyPostString,"POST");
 
         /*------------------END POST CALL---------------------*/
@@ -56,13 +56,10 @@ public class Main {
         System.out.println("CALLING URL SATISPAY WITH (PUT) METHOD");
         System.out.println("----------------------------------");
         System.out.println("----------------------------------");
-        //DEFINING BODY OBJECT
-        Body bodyPut = new Body("MATCH_CODE",(long) 200,"USD");
-        String bodyPutString = gson.toJson(bodyPut);
-        System.out.println("BODY:   " + bodyPutString);
+        System.out.println("BODY:   NONE");
         System.out.println("----------------------------------");
-        //CALL TO SATISPAY API WITH PUT METHOD
-        command.callingSatispayURL(Constants.SATISPAY_URL, bodyPutString,"PUT");
+        //CALLING SATISPAY API + A QUERY PARAM WITH PUT METHOD
+        command.callingSatispayURL(Constants.SATISPAY_URL+"?storeId={1234}", "","PUT");
 
         /*------------------END PUT CALL--------------------*/
         /*------------------START DELETE CALL---------------*/
@@ -78,7 +75,7 @@ public class Main {
         System.out.println("----------------------------------");
         System.out.println("BODY:   NONE");
         System.out.println("----------------------------------");
-        //CALL TO SATISPAY API + A QUERY PARAM WITH DELETE METHOD
+        //CALLING SATISPAY API + A QUERY PARAM WITH DELETE METHOD
         command.callingSatispayURL(Constants.SATISPAY_URL+"?storeId={1234}", "","DELETE");
 
         /*------------------END DELETE CALL---------------*/
