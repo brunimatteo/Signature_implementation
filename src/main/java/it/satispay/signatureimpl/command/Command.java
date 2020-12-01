@@ -34,7 +34,7 @@ public class Command {
             conn.setRequestProperty("host", Constants.HOST);
             conn.setRequestProperty("date", service.getDateFormatted());
             conn.setRequestProperty("digest", service.createTheDigest(body));
-            conn.setRequestProperty("Authorization", service.composeTheAuthorizationHeader(service.createTheSignature(body, method, service.createTheString(method, body, false), service.readAndGetPrivateKeyFromFile())));
+            conn.setRequestProperty("Authorization", service.composeTheAuthorizationHeader(service.createTheSignature(urlSatispay, body, method, service.createTheString(urlSatispay, method, body, false), service.readAndGetPrivateKeyFromFile())));
             //SET BODY
             if(!body.equals("")){
                 conn.setDoOutput(true);

@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -43,7 +45,7 @@ public class Service {
     /**
      This method read and return the private key (cleaned from \n, ecc...) in the file .pem inside
      the current project.
-     @return The clean private key as String
+     @return The cleaned private key as String
      */
     public String readAndGetPrivateKeyFromFile() {
         try {
@@ -68,7 +70,7 @@ public class Service {
     /**
      This method read and return the public key (cleaned from \n, ecc...) in the file .txt inside
      the current project.
-     @return The clean public key as String
+     @return The cleaned public key as String
      */
     public static String readAndGetPublicKeyFromFile() {
         try {
@@ -92,26 +94,30 @@ public class Service {
 
     /**
      This method create the string needed to produce the signature
+     @param url The current url
      @param method The current verb of the call to Satispay server
      @param stringToHash The string to hash to produce the Digest
      @param printOnConsole This is just a simple flag in order to print the string at console one time only
      @return The String formatted as per Satispay Documentation
      */
-    public String createTheString(String method, String stringToHash, boolean printOnConsole){
+    public String createTheString(String url, String method, String stringToHash, boolean printOnConsole){
         if(printOnConsole){
-            System.out.println("STRING_TO_SIGN:\n" +  getRequestTarget(method.toLowerCase()) + "\n" + "host: " + Constants.HOST + "\n" + "date: " + getDateFormatted() + "\n" + "digest: " + createTheDigest(stringToHash));
+            System.out.println("STRING_TO_SIGN:\n" +  getRequestTargetString(url, method.toLowerCase()) + "\n" + "host: " + Constants.HOST + "\n" + "date: " + getDateFormatted() + "\n" + "digest: " + createTheDigest(stringToHash));
             System.out.println("----------------------------------");
         }
-        return getRequestTarget(method.toLowerCase()) + "\n" + "host: " + Constants.HOST + "\n" + "date: " + getDateFormatted() + "\n" + "digest: " + createTheDigest(stringToHash);
+        return getRequestTargetString(url, method.toLowerCase()) + "\n" + "host: " + Constants.HOST + "\n" + "date: " + getDateFormatted() + "\n" + "digest: " + createTheDigest(stringToHash);
     }
 
     /**
      This method produce the signature
+     @param url The current url
+     @param body The current body
+     @param method The current http verb
      @param stringToSign The string to sign
      @param privateKey The private key needed to produce the signature
      @return The signature as String
      */
-    public String createTheSignature(String body, String method, String stringToSign, String privateKey){
+    public String createTheSignature(String url, String body, String method, String stringToSign, String privateKey){
         try {
             Signature privateSignature = Signature.getInstance("SHA256withRSA");
             PKCS8EncodedKeySpec encodedPrivateKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey.getBytes()));
@@ -121,7 +127,7 @@ public class Service {
             privateSignature.update(stringToSign.getBytes("UTF-8"));
             byte[] signatureValue = privateSignature.sign();
 
-            verifyTheSignature(createTheString(method, body, true), Base64.getEncoder().encodeToString(signatureValue), readAndGetPublicKeyFromFile());
+            verifyTheSignature(createTheString(url, method, body, true), Base64.getEncoder().encodeToString(signatureValue), readAndGetPublicKeyFromFile());
 
             System.out.println("SIGNATURE:   " +  Base64.getEncoder().encodeToString(signatureValue));
             System.out.println("----------------------------------");
@@ -184,15 +190,15 @@ public class Service {
     public String getDateFormatted() {
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 0", Locale.ENGLISH);
         return formatter.format(new Date());
-        //return "Mon, 18 Mar 2019 15:10:24 +0000";
     }
 
     /**
-     This method compose the Request Target string value
+     This method compose the Request Target string
+     @param url The current url
      @param method The current verb of the call to Satispay server
-     @return The Request Target string value formatted as per Satispay Documentation
+     @return The Request Target string formatted as per Satispay Documentation
      */
-    public String getRequestTarget(String method) {
-        return Constants.REQUEST_TARGET_FIELD_NAME + " " + method + " " + Constants.REQUEST_TARGET_VALUE;
+    public String getRequestTargetString(String url, String method) {
+        return Constants.REQUEST_TARGET_FIELD_NAME + " " + method + " " + url.substring(url.lastIndexOf(".com") + 4);
     }
 }

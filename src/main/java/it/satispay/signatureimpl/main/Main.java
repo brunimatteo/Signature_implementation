@@ -78,8 +78,8 @@ public class Main {
         System.out.println("----------------------------------");
         System.out.println("BODY:   NONE");
         System.out.println("----------------------------------");
-        //CALL TO SATISPAY API WITH DELETE METHOD
-        command.callingSatispayURL(Constants.SATISPAY_URL, "","DELETE");
+        //CALL TO SATISPAY API + A QUERY PARAM WITH DELETE METHOD
+        command.callingSatispayURL(Constants.SATISPAY_URL+"?storeId={1234}", "","DELETE");
 
         /*------------------END DELETE CALL---------------*/
     }
