@@ -98,7 +98,7 @@ public class Service {
      @param printOnConsole This is just a simple flag in order to print the string at console one time only
      @return The String formatted as per Satispay Documentation
      */
-    public String createTheString(String url, String method, String stringToHash, boolean printOnConsole){
+    public String createTheString(String url, String method, String stringToHash, boolean printOnConsole) {
         if(printOnConsole){
             System.out.println("STRING_TO_SIGN:\n" +  getRequestTargetString(url, method.toLowerCase()) + "\n" + "host: " + Constants.HOST + "\n" + "date: " + getDateFormatted() + "\n" + "digest: " + createTheDigest(stringToHash));
             System.out.println("----------------------------------");
@@ -115,7 +115,7 @@ public class Service {
      @param privateKey The private key needed to produce the signature
      @return The signature as String
      */
-    public String createTheSignature(String url, String body, String method, String stringToSign, String privateKey){
+    public String createTheSignature(String url, String body, String method, String stringToSign, String privateKey) {
         try {
             Signature privateSignature = Signature.getInstance("SHA256withRSA");
             PKCS8EncodedKeySpec encodedPrivateKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey.getBytes()));
@@ -170,7 +170,7 @@ public class Service {
      @param signature The signature
      @return The Authorization Header value formatted as per Satispay Documentation
      */
-    public String composeTheAuthorizationHeader(String signature){
+    public String composeTheAuthorizationHeader(String signature) {
         String authorization = "Signature " + "keyId=" + "\"" + Constants.KEY_ID +
                 "\", " + "algorithm=" + "\"" + Constants.ALGORITHM_AUTHORIZATION_VALUE + "\", " + "headers=" +
                 "\"(request-target) host date digest\", " + "signature=" + "\"" + signature + "\"";

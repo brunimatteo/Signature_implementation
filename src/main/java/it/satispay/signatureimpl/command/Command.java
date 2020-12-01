@@ -36,7 +36,7 @@ public class Command {
             conn.setRequestProperty("Digest", service.createTheDigest(body));
             conn.setRequestProperty("Authorization", service.composeTheAuthorizationHeader(service.createTheSignature(urlSatispay, body, method, service.createTheString(urlSatispay, method, body, false), service.readAndGetPrivateKeyFromFile())));
             //SET BODY
-            if(!body.equals("")){
+            if(!body.equals("")) {
                 conn.setDoOutput(true);
                 conn.getOutputStream().write(body.getBytes("UTF8"));
             }
