@@ -17,7 +17,7 @@ public class Command {
     Service service = new Service();
 
     /**
-     This method call the given Satispay URL
+     This method calls the given Satispay URL
      @param urlSatispay The url to call
      @param body The body content, if any
      @param method The Http verb of the call ('GET', 'POST, 'PUT', 'DELETE')
@@ -31,9 +31,9 @@ public class Command {
             conn.setRequestMethod(method);
             //SET HEADER FIELDS
             if(!body.equals("")) conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("host", Constants.HOST);
-            conn.setRequestProperty("date", service.getDateFormatted());
-            conn.setRequestProperty("digest", service.createTheDigest(body));
+            conn.setRequestProperty("Host", Constants.HOST);
+            conn.setRequestProperty("Date", service.getDateFormatted());
+            conn.setRequestProperty("Digest", service.createTheDigest(body));
             conn.setRequestProperty("Authorization", service.composeTheAuthorizationHeader(service.createTheSignature(urlSatispay, body, method, service.createTheString(urlSatispay, method, body, false), service.readAndGetPrivateKeyFromFile())));
             //SET BODY
             if(!body.equals("")){

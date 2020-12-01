@@ -36,7 +36,7 @@ public class Main {
         System.out.println("CALLING URL SATISPAY WITH (POST) METHOD");
         System.out.println("----------------------------------");
         System.out.println("----------------------------------");
-        //DEFINE BODY OBJECT
+        //DEFINING BODY OBJECT
         Body bodyPost = new Body("MATCH_CODE",(long) 100,"EUR");
         String bodyPostString = gson.toJson(bodyPost);
         System.out.println("BODY:   " + bodyPostString);
@@ -56,7 +56,7 @@ public class Main {
         System.out.println("CALLING URL SATISPAY WITH (PUT) METHOD");
         System.out.println("----------------------------------");
         System.out.println("----------------------------------");
-        //DEFINE BODY OBJECT
+        //DEFINING BODY OBJECT
         Body bodyPut = new Body("MATCH_CODE",(long) 200,"USD");
         String bodyPutString = gson.toJson(bodyPut);
         System.out.println("BODY:   " + bodyPutString);

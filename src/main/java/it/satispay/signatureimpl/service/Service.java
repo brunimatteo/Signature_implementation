@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -24,7 +22,7 @@ public class Service {
     private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
 
     /**
-     This method, given a string, produce the Digest string header, Hashing
+     This method, given a string, produces the Digest string header, Hashing
      the content of the body with sha256 algorithm using Base64 as output
      @param stringToHash The string to hash
      @return The Digest string header formatted as per Satispay Documentation
@@ -43,7 +41,7 @@ public class Service {
     }
 
     /**
-     This method read and return the private key (cleaned from \n, ecc...) in the file .pem inside
+     This method reads and returns the private key (cleaned from \n, ecc...) in the file .pem inside
      the current project.
      @return The cleaned private key as String
      */
@@ -68,7 +66,7 @@ public class Service {
     }
 
     /**
-     This method read and return the public key (cleaned from \n, ecc...) in the file .txt inside
+     This method reads and returns the public key (cleaned from \n, ecc...) in the file .txt inside
      the current project.
      @return The cleaned public key as String
      */
@@ -93,7 +91,7 @@ public class Service {
     }
 
     /**
-     This method create the string needed to produce the signature
+     This method composes the string needed to produce the signature
      @param url The current url
      @param method The current verb of the call to Satispay server
      @param stringToHash The string to hash to produce the Digest
@@ -109,7 +107,7 @@ public class Service {
     }
 
     /**
-     This method produce the signature
+     This method composes the signature
      @param url The current url
      @param body The current body
      @param method The current http verb
@@ -140,7 +138,7 @@ public class Service {
     }
 
     /**
-     This method make sure that a message indeed comes from the creator of our public key
+     This method makes sure that a message indeed comes from the creator of our public key
      @param stringUsedToProduceTheSignature The string used to produce the signature
      @param signature The signature
      @param publicKey The public key needed for the verification
@@ -168,7 +166,7 @@ public class Service {
     }
 
     /**
-     This method compose the Authorization Header value
+     This method composes the Authorization Header value
      @param signature The signature
      @return The Authorization Header value formatted as per Satispay Documentation
      */
@@ -184,7 +182,7 @@ public class Service {
     }
 
     /**
-     This method get the current date well formatted
+     This method gets the current date well formatted
      @return The current date formatted as per Satispay Documentation
      */
     public String getDateFormatted() {
@@ -193,7 +191,7 @@ public class Service {
     }
 
     /**
-     This method compose the Request Target string
+     This method composes the Request Target string
      @param url The current url
      @param method The current verb of the call to Satispay server
      @return The Request Target string formatted as per Satispay Documentation
