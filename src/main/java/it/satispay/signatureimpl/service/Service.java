@@ -124,12 +124,13 @@ public class Service {
             privateSignature.initSign(privateKeyObject);
             privateSignature.update(stringToSign.getBytes("UTF-8"));
             byte[] signatureValue = privateSignature.sign();
-
-            verifyTheSignature(createTheString(url, method, body, true), Base64.getEncoder().encodeToString(signatureValue), readAndGetPublicKeyFromFile());
-
-            System.out.println("SIGNATURE:   " +  Base64.getEncoder().encodeToString(signatureValue));
+            boolean isVerified = verifyTheSignature(createTheString(url, method, body, true), Base64.getEncoder().encodeToString(signatureValue), readAndGetPublicKeyFromFile());
+            if(isVerified){
+                System.out.println("VALID_SIGNATURE:   " +  Base64.getEncoder().encodeToString(signatureValue));
+            } else {
+                System.out.println("WRONG_SIGNATURE:   " +  Base64.getEncoder().encodeToString(signatureValue));
+            }
             System.out.println("----------------------------------");
-
             return Base64.getEncoder().encodeToString(signatureValue);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,"Something went wrong in method createTheSignature() inside Class Service" + e);
@@ -142,7 +143,7 @@ public class Service {
      @param stringUsedToProduceTheSignature The string used to produce the signature
      @param signature The signature
      @param publicKey The public key needed for the verification
-     @return true if they do match, false if they don't
+     @return true if signature is verified, false if it's not
      */
     public static boolean verifyTheSignature(String stringUsedToProduceTheSignature, String signature, String publicKey) {
         try {
@@ -154,11 +155,10 @@ public class Service {
             publicSignature.initVerify(publicKeyObject);
             publicSignature.update(stringUsedToProduceTheSignature.getBytes(UTF_8));
             byte[] signatureBytes = Base64.getDecoder().decode(signature);
-
-            System.out.println("MATCH:   " +  publicSignature.verify(signatureBytes));
+            boolean isCorrect = publicSignature.verify(signatureBytes);
+            System.out.println("IS_SIGNATURE_VERIFIED:   " + isCorrect);
             System.out.println("----------------------------------");
-
-            return publicSignature.verify(signatureBytes);
+            return isCorrect;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,"Something went wrong in method verifyTheSignature() inside Class Service" + e);
             return false;
