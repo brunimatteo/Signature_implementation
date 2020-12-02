@@ -41,7 +41,7 @@ public class Service {
     }
 
     /**
-     This method reads and returns the private key (cleaned from \n, \r , ecc...) in the file .pem inside
+     This method reads and return the private key (cleaned from \n, \r , ecc...) in the file .pem inside
      the current project.
      @return The cleaned private key as String
      */
@@ -67,7 +67,7 @@ public class Service {
     }
 
     /**
-     This method reads and returns the public key (cleaned from \n, \r , ecc...) in the file .txt inside
+     This method reads and return the public key (cleaned from \n, \r , ecc...) in the file .txt inside
      the current project.
      @return The cleaned public key as String
      */
