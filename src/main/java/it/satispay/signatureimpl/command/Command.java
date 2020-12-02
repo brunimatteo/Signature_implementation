@@ -48,7 +48,7 @@ public class Command {
             BufferedReader br = new BufferedReader(in);
             String output;
             while ((output = br.readLine()) != null) {
-                System.out.println("RESPONSE FROM SATISPAY API:\n" + output);
+                System.out.println("RESPONSE_FROM_SATISPAY_API:\n" + output);
                 System.out.println("----------------------------------");
                 System.out.println("----------------------------------");
             }
